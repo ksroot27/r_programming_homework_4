@@ -1,4 +1,5 @@
 library(tidyverse)
+library(broom)
 
 homicides <- read_csv("data_raw/data-homicides-master/homicide-data.csv")
 head(homicides)
@@ -19,6 +20,8 @@ unsolved <- homicides %>%
 baltimore <- unsolved %>% 
   filter(city_name == "Baltimore, MD")
 
-prop.test(x = baltimore$n_unsolved,
+baltimore_prop <- prop.test(x = baltimore$n_unsolved,
           n = baltimore$n_homicides)
 
+tidy(baltimore_prop) %>% 
+  select(estimate, conf.low, conf.high)

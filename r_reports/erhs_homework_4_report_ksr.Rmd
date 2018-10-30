@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Unsolved Homicides in Baltimore
 
-```{r include = FALSE, }
+```{r include = FALSE}
 library(tidyverse)
 
 homicides <- read_csv("../data_raw/data-homicides-master/homicide-data.csv")
@@ -27,7 +27,7 @@ unsolved <- homicides %>%
             n_unsolved = sum(unsolved))
 ```
 
-```{r}
+```{r echo = FALSE}
 baltimore <- unsolved %>% 
   filter(city_name == "Baltimore, MD")
 
