@@ -36,17 +36,9 @@ unsolved_prop <- unsolved %>%
   
 head(unsolved_prop)
 
-unsolved_prop <- unsolved_prop %>% 
-  mutate(city_name = factor(city_name))
-  
-unsolved_prop$city_name <- factor(unsolved_prop$city_name, levels = unsolved_prop[order(unsolved_prop$estimate)])
-
-
-
-order(unsolved_prop, )
-
 unsolved_prop %>% 
-  mutate(city_name = factor(city_name, levels = city_name[order(estimate)]))
+  mutate(city_name = fct_reorder(city_name, estimate)) %>% 
   ggplot(aes(x = city_name, y = estimate)) +
   geom_point() +
-  coord_flip()
+  coord_flip() +
+  theme_dark()
