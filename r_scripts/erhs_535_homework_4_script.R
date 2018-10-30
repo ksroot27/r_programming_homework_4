@@ -1,5 +1,6 @@
 library(tidyverse)
 library(broom)
+library(purrr)
 
 homicides <- read_csv("data_raw/data-homicides-master/homicide-data.csv")
 head(homicides)
