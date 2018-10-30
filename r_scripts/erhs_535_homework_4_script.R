@@ -8,14 +8,15 @@ homicides <- homicides %>%
   unite(city_name, city, state, sep = ", ")
 
 homicides$city_name
-
-homicides %>% 
+  
+unsolved <- homicides %>% 
   mutate(unsolved = disposition == "Closed without arrest" | disposition == "Open/No arrest") %>% 
   group_by(city_name) %>% 
   summarize(n_homicides = n(),
-            n_unsolved = count(unsolved))
-  
-  
+            n_unsolved = sum(unsolved))
+
+
+
 levels(homicides$disposition)
 
 
