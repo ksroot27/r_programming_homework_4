@@ -34,12 +34,19 @@ unsolved_prop <- unsolved %>%
   unnest(.drop = TRUE) %>% 
   select(city_name, estimate, conf.low, conf.high)
   
-  head(unsolved_prop)
+head(unsolved_prop)
+
+unsolved_prop <- unsolved_prop %>% 
+  mutate(city_name = factor(city_name))
+  
+unsolved_prop$city_name <- factor(unsolved_prop$city_name, levels = unsolved_prop[order(unsolved_prop$estimate)])
 
 
-unsolved %>% 
-  mutate(newcol = map2(n_unsolved, n_homicides,  ~ prop.test(.x, n = .y) %>% 
-  {tibble(estimate = .[["estimate"]],
-          conf_lower = .[["conf.int"]][[1]], 
-          conf_upper = .[["conf.int"]][[2]])})) %>%
-  unnest
+
+order(unsolved_prop, )
+
+unsolved_prop %>% 
+  mutate(city_name = factor(city_name, levels = city_name[order(estimate)]))
+  ggplot(aes(x = city_name, y = estimate)) +
+  geom_point() +
+  coord_flip()
