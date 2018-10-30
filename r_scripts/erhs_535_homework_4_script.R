@@ -1,6 +1,7 @@
 library(tidyverse)
 library(broom)
 library(purrr)
+library(tibble)
 
 homicides <- read_csv("data_raw/data-homicides-master/homicide-data.csv")
 head(homicides)
@@ -26,3 +27,19 @@ baltimore_prop <- prop.test(x = baltimore$n_unsolved,
 
 tidy(baltimore_prop) %>% 
   select(estimate, conf.low, conf.high)
+
+unsolved_prop <- unsolved %>% 
+  mutate(test = map2(n_unsolved, n_homicides,  ~ prop.test(.x, n = .y))) %>% 
+  mutate(test = map(test, ~ tidy(.x))) %>% 
+  unnest(.drop = TRUE) %>% 
+  select(city_name, estimate, conf.low, conf.high)
+  
+  head(unsolved_prop)
+
+
+unsolved %>% 
+  mutate(newcol = map2(n_unsolved, n_homicides,  ~ prop.test(.x, n = .y) %>% 
+  {tibble(estimate = .[["estimate"]],
+          conf_lower = .[["conf.int"]][[1]], 
+          conf_upper = .[["conf.int"]][[2]])})) %>%
+  unnest
