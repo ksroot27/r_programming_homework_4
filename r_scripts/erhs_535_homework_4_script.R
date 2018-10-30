@@ -40,5 +40,7 @@ unsolved_prop %>%
   mutate(city_name = fct_reorder(city_name, estimate)) %>% 
   ggplot(aes(x = city_name, y = estimate)) +
   geom_point() +
+  geom_errorbarh(aes(xmin = conf.low, xmax = conf.high), position = city_name) +
   coord_flip() +
   theme_dark()
+  
