@@ -1,7 +1,7 @@
 ---
 title: 'ERHS 535 Homework #4'
 author: "Kyle S. Root"
-date: "October 24, 2018"
+date: "October 30, 2018"
 output: pdf_document
 ---
 
@@ -9,15 +9,34 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Unsolved Homicides in Baltimore
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+```{r}
+library(tidyverse)
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+homicides <- read_csv("../data_raw/data-homicides-master/homicide-data.csv")
+head(homicides)
 
-```{r cars}
-summary(cars)
+homicides <- homicides %>% 
+  unite(city_name, city, state, sep = ", ")
+
+homicides$city_name
+
+unique(homicides$disposition)
+
+unsolved <- homicides %>% 
+  mutate(unsolved = disposition == "Closed without arrest" | disposition == "Open/No arrest") %>% 
+  group_by(city_name) %>% 
+  summarize(n_homicides = n(),
+            n_unsolved = sum(unsolved))
+
+baltimore <- unsolved %>% 
+  filter(city_name == "Baltimore, MD")
+
+prop.test(x = baltimore$n_unsolved,
+          n = baltimore$n_homicides)
 ```
+
 
 ## Including Plots
 
