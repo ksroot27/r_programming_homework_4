@@ -38,10 +38,11 @@ head(unsolved_prop)
 
 unsolved_prop %>% 
   mutate(city_name = fct_reorder(city_name, estimate)) %>% 
-  ggplot() +
-  geom_point(aes(x = city_name, y = estimate)) +
-  geom_errorbar(aes(x = city_name, ymin = conf.low, ymax = conf.high)) +
+  ggplot(aes(x = city_name, y = estimate)) +
+  geom_point(color = "white") +
+  geom_errorbar(color = "white", aes(x = city_name, ymin = conf.low, ymax = conf.high)) +
   coord_flip() +
   theme_dark()
+  
 
   
