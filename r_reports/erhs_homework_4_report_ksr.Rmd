@@ -9,10 +9,14 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Unsolved Homicides in Baltimore
+## Unsolved homicides in Baltimore, MD
 
 ```{r include = FALSE}
 library(tidyverse)
+library(broom)
+library(purrr)
+library(tibble)
+library(scales)
 
 homicides <- read_csv("../data_raw/data-homicides-master/homicide-data.csv")
 head(homicides)
@@ -36,12 +40,32 @@ prop.test(x = baltimore$n_unsolved,
 ```
 
 
-## Including Plots
+## Unsolved homicides by city
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r include = FALSE}
+unsolved_prop <- unsolved %>% 
+  mutate(test = map2(n_unsolved, n_homicides,  ~ prop.test(.x, n = .y))) %>% 
+  mutate(test = map(test, ~ tidy(.x))) %>% 
+  unnest(.drop = TRUE) %>% 
+  select(city_name, estimate, conf.low, conf.high)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r warning = FALSE, fig.width = 4, fig.height = 8}
+unsolved_prop %>% 
+  mutate(city_name = fct_reorder(city_name, estimate)) %>% 
+  ggplot(aes(x = city_name, y = estimate)) +
+  geom_point(color = "white") +
+  geom_errorbar(color = "white", aes(x = city_name,
+                                     ymin = conf.low,
+                                     ymax = conf.high,
+                                     width = 0)) +
+  coord_flip() +
+  labs(title = "Unsolved homicides by city",
+       subtitle = "Bars show 95% confidence interval",
+       x = NULL,
+       y = "Percent of homicides that are unsolved") +
+  scale_y_continuous(limits = c(.2, .75),
+                     breaks = c(.2, .3, .4, .5, .6, .7),
+                     labels = percent) +
+  theme_dark()
+```

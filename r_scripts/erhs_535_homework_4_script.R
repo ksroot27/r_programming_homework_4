@@ -2,6 +2,7 @@ library(tidyverse)
 library(broom)
 library(purrr)
 library(tibble)
+library(scales)
 
 homicides <- read_csv("data_raw/data-homicides-master/homicide-data.csv")
 head(homicides)
@@ -40,13 +41,18 @@ unsolved_prop %>%
   mutate(city_name = fct_reorder(city_name, estimate)) %>% 
   ggplot(aes(x = city_name, y = estimate)) +
   geom_point(color = "white") +
-  geom_errorbar(color = "white", aes(x = city_name, ymin = conf.low, ymax = conf.high)) +
+  geom_errorbar(color = "white", aes(x = city_name,
+                                     ymin = conf.low,
+                                     ymax = conf.high,
+                                     width = 0)) +
   coord_flip() +
   labs(title = "Unsolved homicides by city",
        subtitle = "Bars show 95% confidence interval",
        x = NULL,
        y = "Percent of homicides that are unsolved") +
-  scale_y_continuous(limits = c(.2, .7)) +
+  scale_y_continuous(limits = c(.2, .75),
+                     breaks = c(.2, .3, .4, .5, .6, .7),
+                     labels = percent) +
   theme_dark()
   
 
