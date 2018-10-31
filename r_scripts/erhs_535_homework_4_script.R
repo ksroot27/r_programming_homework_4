@@ -42,6 +42,11 @@ unsolved_prop %>%
   geom_point(color = "white") +
   geom_errorbar(color = "white", aes(x = city_name, ymin = conf.low, ymax = conf.high)) +
   coord_flip() +
+  labs(title = "Unsolved homicides by city",
+       subtitle = "Bars show 95% confidence interval",
+       x = NULL,
+       y = "Percent of homicides that are unsolved") +
+  scale_y_continuous(limits = c(.2, .7)) +
   theme_dark()
   
 
