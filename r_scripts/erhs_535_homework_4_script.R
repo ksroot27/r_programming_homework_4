@@ -47,6 +47,7 @@ head(unsolved_prop)
 
 unsolved_prop %>% 
   mutate(city_name = fct_reorder(city_name, estimate)) %>% 
+  filter(city_name != "Tulsa, AL") %>% 
   ggplot(aes(x = city_name,
              y = estimate)) +
   geom_point(color = "white") +
